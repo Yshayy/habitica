@@ -5,4 +5,4 @@ npm run-script apidoc
 mongoimport --db habitica-dev --collection users .devcontainer/_data/users.jsons
 mongoimport --db habitica-dev --collection tasks .devcontainer/_data/tasks.jsons
 mongoimport --db habitica-dev --collection groups .devcontainer/_data/groups.jsons
-npx serve -l 3001 apidoc_build &
+#npx serve -l 3001 apidoc_build &

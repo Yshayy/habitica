@@ -16,15 +16,19 @@ services:
       - ..:/workspace:cached
       #- vscode-server:/home/node/.vscode-server
     labels:
-    - "traefik.http.routers.app-api.rule=Host(`api.localtest.me`)"
-    - "traefik.http.routers.app-api.entrypoints=web"
-    - "traefik.http.routers.app-api.loadbalancer.server=3000"
-    - "traefik.http.routers.app-ui.rule=Host(`ui.localtest.me`)"
-    - "traefik.http.routers.app-ui.entrypoints=web"
-    - "traefik.http.routers.app-ui.loadbalancer.server=8081"
-    - "traefik.http.routers.app-docs.rule=Host(`docs.localtest.me`)"
-    - "traefik.http.routers.app-docs.entrypoints=web"
-    - "traefik.http.routers.app-docs.loadbalancer.server=8081"
+    - "traefik.enable=true"
+    - "traefik.http.routers.app.rule=Host(`localtest.me`)"
+    - "traefik.http.routers.app.entrypoints=web"
+    - "traefik.http.routers.app.service=app"
+    - "traefik.http.services.app.loadbalancer.server.port=8081"
+    - "traefik.http.routers.storybook.rule=Host(`ui.localtest.me`)"
+    - "traefik.http.routers.storybook.entrypoints=web"
+    - "traefik.http.routers.storybook.service=storybook"
+    - "traefik.http.services.storybook.loadbalancer.server.port=6006"
+    - "traefik.http.routers.docs.rule=Host(`docs.localtest.me`)"
+    - "traefik.http.routers.docs.entrypoints=web"
+    - "traefik.http.routers.docs.service=docs"
+    - "traefik.http.services.docs.loadbalancer.server.port=3001"
     
 
     command: sleep infinity
@@ -50,7 +54,6 @@ services:
 
   traefik:
     image: "traefik:v2.5"
-    container_name: "traefik"
     command:
       - "--api.insecure=true"
       - "--providers.docker=true"

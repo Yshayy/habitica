@@ -14,7 +14,7 @@
 	],
 	"shutdownAction": "stopCompose",
 
-	"postCreateCommand": [".devcontainer/prepare"],
-	"forwardPorts": [8081, 3000, 3001, 9000, 8000],
+	"postCreateCommand": [#".devcontainer/prepare"],
+	"forwardPorts": [/*8081, 6006, 3000, 3001, 9000,*/ 8000],
 	"remoteUser": "node"
 }
