@@ -1,0 +1,20 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.194.0/containers/javascript-node
+{
+	"name": "Node.js",
+	"dockerComposeFile": "./docker-compose.yml",
+	"workspaceFolder": "/workspace",
+	"service": "app",
+
+	"settings": {},
+
+	"extensions": [
+		"dbaeumer.vscode-eslint",
+		"mongodb.mongodb-vscode" 
+	],
+	"shutdownAction": "stopCompose",
+
+	"postCreateCommand": [".devcontainer/prepare"],
+	"forwardPorts": [8081, 3000, 3001, 9000, 8000],
+	"remoteUser": "node"
+}

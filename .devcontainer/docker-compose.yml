@@ -1,0 +1,65 @@
+version: '3'
+
+services:
+  app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VARIANT: 14
+        USER_UID: 1000
+        USER_GID: 1000
+    environment:
+    - NODE_DB_URI=mongodb://localhost/habitica-dev
+    - TEST_DB_URI=mongodb://localhost/habitica-test
+    volumes:
+      - ..:/workspace:cached
+      #- vscode-server:/home/node/.vscode-server
+    labels:
+    - "traefik.http.routers.app-api.rule=Host(`api.localtest.me`)"
+    - "traefik.http.routers.app-api.entrypoints=web"
+    - "traefik.http.routers.app-api.loadbalancer.server=3000"
+    - "traefik.http.routers.app-ui.rule=Host(`ui.localtest.me`)"
+    - "traefik.http.routers.app-ui.entrypoints=web"
+    - "traefik.http.routers.app-ui.loadbalancer.server=8081"
+    - "traefik.http.routers.app-docs.rule=Host(`docs.localtest.me`)"
+    - "traefik.http.routers.app-docs.entrypoints=web"
+    - "traefik.http.routers.app-docs.loadbalancer.server=8081"
+    
+
+    command: sleep infinity
+    network_mode: service:db
+
+  db:
+    image: mongo:3.6
+    restart: unless-stopped
+    volumes:
+      - mongodb-data:/data/db
+  
+  mongoexpress:
+    image: mongo-express
+    environment: 
+    - VCAP_APP_PORT=9000
+    - ME_CONFIG_MONGODB_URL=mongodb://db
+    labels:
+    - "traefik.enable=true"
+    - "traefik.http.routers.mongoexpress.rule=Host(`mongo.localtest.me`)"
+    - "traefik.http.routers.mongoexpress.entrypoints=web"
+    - "traefik.http.services.mongoexpress.loadbalancer.server.port=9000"
+    network_mode: service:db
+
+  traefik:
+    image: "traefik:v2.5"
+    container_name: "traefik"
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:8000"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    network_mode: service:db
+
+volumes:
+  mongodb-data:
+  #vscode-server:
